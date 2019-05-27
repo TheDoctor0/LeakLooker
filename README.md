@@ -7,6 +7,10 @@ New version supports:
 - MongoDB
 - SMB
 - Gitlab
+- Gogs
+- Gitea
+- Mattermost
+- RocketChat
 - Rsync
 - Jenkins
 - Sonarqube
@@ -67,6 +71,10 @@ optional arguments:
   --mongodb      MongoDB (default: False)
   --samba        Samba (default: False)
   --gitlab       Gitlab (default: False)
+  --gogs         Gogs (default: False)
+  --gitea        Gitea (default: False)
+  --mattermost   Mattermost (default: False)
+  --rocketchat   RocketChat (default: False)
   --rsync        Rsync (default: False)
   --jenkins      Jenkins (default: False)
   --sonarqube    SonarQube (default: False)
