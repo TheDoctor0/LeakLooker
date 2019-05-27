@@ -35,16 +35,19 @@ group = parser.add_argument_group("Pages")
 parser.add_argument("--elastic", help="Elasti search", action='store_true')
 parser.add_argument("--couchdb", help="CouchDB", action='store_true')
 parser.add_argument("--mongodb", help="MongoDB", action='store_true')
-
 parser.add_argument("--samba", help="Samba", action='store_true')
 parser.add_argument("--gitlab", help="Gitlab", action='store_true')
+parser.add_argument("--gogs", help="Gogs", action='store_true')
+parser.add_argument("--gitea", help="Gitea", action='store_true')
 parser.add_argument("--rsync", help="Rsync", action='store_true')
 parser.add_argument("--jenkins", help="Jenkins", action='store_true')
 parser.add_argument("--sonarqube", help="SonarQube", action='store_true')
+parser.add_argument('--kibana', help='Kibana', action='store_true')
+parser.add_argument('--mattermost', help='Mattermost', action='store_true')
+parser.add_argument('--rocketchat', help='Rocketchat', action='store_true')
+
 parser.add_argument("--query", help="Additional query or filter for Shodan", default="")
 
-
-parser.add_argument('--kibana', help='Kibana', action='store_true')
 group.add_argument('--first', help='First page', default=None, type=int)
 group.add_argument('--last', help='Last page', default=None, type=int)
 
@@ -52,15 +55,19 @@ args = parser.parse_args()
 
 samba = args.samba
 gitlab = args.gitlab
+gogs = args.gogs
+gitea = args.gitea
 rsync = args.rsync
 jenkins = args.jenkins
 sonarqube = args.sonarqube
-query = args.query
-
 elastic = args.elastic
 couchdb = args.couchdb
 mongodb = args.mongodb
 kibana = args.kibana
+mattermost = args.mattermost
+rocketchat = args.rocketchat
+
+query = args.query
 first = args.first
 last = args.last
 
@@ -84,8 +91,12 @@ SHODAN_API_KEY = ''
 query_elastic = 'product:elastic port:9200 '
 query_mongodb = 'product:MongoDB '
 query_couchdb = "product:couchdb "
-query_kibana = "kibana content-length: 217 "
+query_kibana = 'kibana content-length: 217 '
+query_mattermost = 'http.component:mattermost'
+query_rocketchat = 'http.favicon.hash:225632504'
 query_gitlab = "http.favicon.hash:1278323681"
+query_gogs = 'http.component:gogs'
+query_gitea = 'gitea'
 query_rsync = "product:rsyncd"
 query_sonarqube = "sonarqube"
 query_jenkins = "jenkins 200 ok"
@@ -161,7 +172,6 @@ def check_elastic(results):
 def check_mongodb(results):
     if results:
         for service in results['matches']:
-
             try:
                 if service['mongodb']['listDatabases']['totalSize'] > 217000000:
                     print("IP: " + Fore.LIGHTBLUE_EX + service['ip_str'] + Fore.RESET)
@@ -277,7 +287,8 @@ def check_jenkins(results):
 def check_sonarqube(results):
     if results:
         for service in results['matches']:
-            print(Fore.LIGHTGREEN_EX + "https://" + service['ip_str'] + ':' + str(service['port']) + Fore.RESET)
+            format_link(service)
+
             if service['hostnames']:
                 print("Hostname")
                 for hostname in service['hostnames']:
@@ -288,12 +299,36 @@ def check_sonarqube(results):
                 print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
             print("-----------------------------")
 
+
 def check_gitlab(results):
     if results:
         for service in results['matches']:
             if 'http' in service:
                 if "register" in service['http']['html']:
-                    print(Fore.LIGHTGREEN_EX + "https://" + service['ip_str'] + ':' + str(service['port']) + Fore.RESET)
+                    format_link(service)
+
+                    if "GitLab Enterprise Edition" in service['http']['html']:
+                        print('Edition: ' + Fore.LIGHTGREEN_EX + "Enterprise" + Fore.RESET)
+                    else:
+                        print('Edition: ' + Fore.LIGHTGREEN_EX + "Community" + Fore.RESET)
+
+                    if service['hostnames']:
+                        for hostname in service['hostnames']:
+                            print('Hostname: ' + Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+                    try:
+                        print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                    except:
+                        print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                    print("-----------------------------")
+
+
+def check_mattermost(results):
+    if results:
+        for service in results['matches']:
+            if 'http' in service:
+                if "signup_user_complete" in service['http']['html']:
+                    format_link(service)
+
                     if service['hostnames']:
                         print("Hostname")
                         for hostname in service['hostnames']:
@@ -303,6 +338,60 @@ def check_gitlab(results):
                     except:
                         print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
                     print("-----------------------------")
+
+
+def check_gogs(results):
+    if results:
+        for service in results['matches']:
+            if 'http' in service:
+                if "sign_up" in service['http']['html']:
+                    format_link(service)
+
+                    if service['hostnames']:
+                        print("Hostname")
+                        for hostname in service['hostnames']:
+                            print(Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+                    try:
+                        print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                    except:
+                        print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                    print("-----------------------------")
+
+
+def check_gitea(results):
+    if results:
+        for service in results['matches']:
+            if 'http' in service:
+                if "sign_up" in service['http']['html']:
+                    format_link(service)
+
+                    if service['hostnames']:
+                        print("Hostname")
+                        for hostname in service['hostnames']:
+                            print(Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+                    try:
+                        print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                    except:
+                        print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                    print("-----------------------------")
+
+
+def check_rocketchat(results):
+    if results:
+        for service in results['matches']:
+            if 'http' in service:
+                format_link(service)
+
+                if service['hostnames']:
+                    print("Hostname")
+                    for hostname in service['hostnames']:
+                        print(Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+                try:
+                    print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                except:
+                    print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                print("-----------------------------")
+
 
 def check_rsync(results):
     if results:
@@ -324,6 +413,16 @@ def check_rsync(results):
                     print(Fore.LIGHTMAGENTA_EX + module + Fore.RESET)
                 print("-----------------------------")
 
+
+def format_link(service):
+    if str(service['port']) == '443':
+        print(Fore.LIGHTGREEN_EX + "https://" + service['ip_str'] + Fore.RESET)
+    elif str(service['port']) == '80':
+        print(Fore.LIGHTGREEN_EX + "http://" + service['ip_str'] + Fore.RESET)
+    else:
+        print(Fore.LIGHTGREEN_EX + "http://" + service['ip_str'] + ':' + str(service['port']) + Fore.RESET)
+
+
 if rsync:
     for page in range(first,last):
         print(Fore.RED + '----------------------------------Rsync - Page ' + str(
@@ -337,6 +436,34 @@ if gitlab:
             page) + '--------------------------------' + Fore.RESET)
         gitlab_results = shodan_query(query_gitlab+ " " + query,page)
         check_gitlab(gitlab_results)
+
+if gogs:
+    for page in range(first,last):
+        print(Fore.RED + '----------------------------------Gogs - Page ' + str(
+            page) + '--------------------------------' + Fore.RESET)
+        gogs_results = shodan_query(query_gogs+ " " + query,page)
+        check_gogs(gogs_results)
+
+if gitea:
+    for page in range(first,last):
+        print(Fore.RED + '----------------------------------Gitea - Page ' + str(
+            page) + '--------------------------------' + Fore.RESET)
+        gitea_results = shodan_query(query_gitea+ " " + query,page)
+        check_gitea(gitea_results)
+
+if mattermost:
+    for page in range(first,last):
+        print(Fore.RED + '----------------------------------Mattermost - Page ' + str(
+            page) + '--------------------------------' + Fore.RESET)
+        mattermost_results = shodan_query(query_mattermost+ " " + query,page)
+        check_mattermost(mattermost_results)
+
+if rocketchat:
+    for page in range(first,last):
+        print(Fore.RED + '----------------------------------Rocketchat - Page ' + str(
+            page) + '--------------------------------' + Fore.RESET)
+        rocketchat_results = shodan_query(query_rocketchat+ " " + query,page)
+        check_rocketchat(rocketchat_results)
 
 if sonarqube:
     for page in range(first, last):
