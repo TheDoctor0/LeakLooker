@@ -1,7 +1,7 @@
 # LeakLooker
-Find open databases with Shodan
+Find open databases and public services with Shodan.
 
-New version supports:
+This version supports:
 - Elasticsearch
 - CouchDB
 - MongoDB
@@ -15,78 +15,63 @@ New version supports:
 - Jenkins
 - Sonarqube
 - Kibana
+- Mattermost
+- Rocketchat
+- Redmine
+- Jira
 
-and custom query.
+Results can be limited using custom query.
 
-Background:
-
+## References
 https://medium.com/@woj_ciech/leaklooker-find-open-databases-in-a-second-9da4249c8472
 
-V2 - https://medium.com/@woj_ciech/leaklooker-v2-find-more-open-servers-and-source-code-leaks-25e671700e41
+https://medium.com/@woj_ciech/leaklooker-v2-find-more-open-servers-and-source-code-leaks-25e671700e41
 
 ## Requirements:
-Python 3
-Shodan paid plan, except Kibana search
+- Python 3
+- Shodan paid plan (except Kibana, Jenkins, Gitea and SonarQube search)
 
-***Put your Shodan API key ina line 82***
-```
-pip3 install shodan
-pip3 install colorama
-pip3 install hurry.filesize
-pip3 install beautifulsoup4
-```
+## Usage
+Put your *Shodan API key* in a line 9.
 
+Install required libraries:
 ```
 pip install -r requirements.txt
 ```
 
-## Usage
+Use script:
 ```
 (venv) root@kali:~/PycharmProjects/LeakLooker# python leaklooker.py -h
-
-         ,
-         )\
-        /  \
-       '  # '
-       ',  ,'
-         `'
-
-         ,
-         )\
-        /  \
-       '  ~ '
-       ',  ,'
-         `'
-LeakLooker - Find open databases
-https://medium.com/@woj_ciech https://github.com/woj-ciech/
-Example: python leaklooker.py --mongodb --couchdb --kibana --elastic --first 21 --last 37
 usage: leaklooker.py [-h] [--elastic] [--couchdb] [--mongodb] [--samba]
-                     [--gitlab] [--rsync] [--jenkins] [--sonarqube]
-                     [--query QUERY] [--kibana] [--first FIRST] [--last LAST]
+                     [--gitlab] [--gogs] [--gitea] [--rsync] [--jenkins]
+                     [--sonarqube] [--kibana] [--mattermost] [--rocketchat]
+                     [--redmine] [--otrs] [--jira] [--query QUERY]
+                     [--first FIRST] [--last LAST]
 
 optional arguments:
   -h, --help     show this help message and exit
-  --elastic      Elasti search (default: False)
+  --elastic      Elastic search (default: False)
   --couchdb      CouchDB (default: False)
   --mongodb      MongoDB (default: False)
   --samba        Samba (default: False)
   --gitlab       Gitlab (default: False)
   --gogs         Gogs (default: False)
   --gitea        Gitea (default: False)
-  --mattermost   Mattermost (default: False)
-  --rocketchat   RocketChat (default: False)
   --rsync        Rsync (default: False)
   --jenkins      Jenkins (default: False)
   --sonarqube    SonarQube (default: False)
-  --query QUERY  Additional query or filter for Shodan (default: )
   --kibana       Kibana (default: False)
+  --mattermost   Mattermost (default: False)
+  --rocketchat   Rocketchat (default: False)
+  --redmine      Redmine (default: False)
+  --otrs         OTRS (default: False)
+  --jira         Jira (default: False)
+  --query QUERY  Additional query or filter for Shodan (default: )
 
 Pages:
-  --first FIRST  First page (default: None)
-  --last LAST    Last page (default: None)
+  --first FIRST  First page (default: 1)
+  --last LAST    Last page (default: 20)
 ```
-
-***You need to specify first and last page***
 
 ## Example
 ```
@@ -183,4 +168,4 @@ Country: United Kingdom
 ![](https://cdn-images-1.medium.com/max/600/1*-s4pZpMIU4ZbdRjuBVxRYg.png)
 
 ## Additional
-Tool has been made for educational purposes only. I'm not responsible for any damage caused. Don't be evil.
+Tool has been made for educational purposes only. I'm not responsible for any damage caused.
