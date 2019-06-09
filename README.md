@@ -13,6 +13,8 @@ This version supports:
 - RocketChat
 - Rsync
 - Jenkins
+- Bamboo
+- TeamCity
 - Sonarqube
 - Kibana
 - Mattermost
@@ -44,9 +46,9 @@ Use script:
 (venv) root@kali:~/PycharmProjects/LeakLooker# python leaklooker.py -h
 usage: leaklooker.py [-h] [--elastic] [--couchdb] [--mongodb] [--samba]
                      [--gitlab] [--gogs] [--gitea] [--rsync] [--jenkins]
-                     [--sonarqube] [--kibana] [--mattermost] [--rocketchat]
-                     [--redmine] [--otrs] [--jira] [--query QUERY]
-                     [--first FIRST] [--last LAST]
+                     [--bamboo] [--teamcity] [--sonarqube] [--kibana]
+                     [--mattermost] [--rocketchat] [--redmine] [--otrs]
+                     [--jira] [--query QUERY] [--first FIRST] [--last LAST]
 
 optional arguments:
   -h, --help     show this help message and exit
@@ -59,6 +61,8 @@ optional arguments:
   --gitea        Gitea (default: False)
   --rsync        Rsync (default: False)
   --jenkins      Jenkins (default: False)
+  --bamboo       Bamboo (default: False)
+  --teamcity     TeamCity (default: False)
   --sonarqube    SonarQube (default: False)
   --kibana       Kibana (default: False)
   --mattermost   Mattermost (default: False)

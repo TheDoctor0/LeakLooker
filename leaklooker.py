@@ -21,6 +21,8 @@ parser.add_argument("--gogs", help="Gogs", action='store_true')
 parser.add_argument("--gitea", help="Gitea", action='store_true')
 parser.add_argument("--rsync", help="Rsync", action='store_true')
 parser.add_argument("--jenkins", help="Jenkins", action='store_true')
+parser.add_argument('--bamboo', help='Bamboo', action='store_true')
+parser.add_argument('--teamcity', help='TeamCity', action='store_true')
 parser.add_argument("--sonarqube", help="SonarQube", action='store_true')
 parser.add_argument('--kibana', help='Kibana', action='store_true')
 parser.add_argument('--mattermost', help='Mattermost', action='store_true')
@@ -356,6 +358,54 @@ if args.jenkins:
                     for job in jobs:
                         print(Fore.CYAN + job + Fore.RESET)
                 print("-----------------------------")
+
+if args.bamboo:
+    for current_page in range(first, last):
+        print(Fore.RED + '----------------------------------Bamboo - Page ' + str(
+            current_page) + '--------------------------------' + Fore.RESET)
+
+        results = shodan_query('title:bamboo title:dashboard', current_page)
+
+        if results is not False:
+            for service in results['matches']:
+                if 'http' in service:
+                    if "Let's get building!" not in service['http']['html']:
+                        format_link(service)
+
+                        if service['hostnames']:
+                            print("Hostname")
+                            for hostname in service['hostnames']:
+                                print(Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+
+                        try:
+                            print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                        except:
+                            print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                        print("-----------------------------")
+
+if args.teamcity:
+    for current_page in range(first, last):
+        print(Fore.RED + '----------------------------------TeamCity - Page ' + str(
+            current_page) + '--------------------------------' + Fore.RESET)
+
+        results = shodan_query('http.component:teamcity', current_page)
+
+        if results is not False:
+            for service in results['matches']:
+                if 'http' in service:
+                    if "register" in service['http']['html']:
+                        format_link(service)
+
+                        if service['hostnames']:
+                            print("Hostname")
+                            for hostname in service['hostnames']:
+                                print(Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+
+                        try:
+                            print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                        except:
+                            print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                        print("-----------------------------")
 
 if args.sonarqube:
     for current_page in range(first, last):
