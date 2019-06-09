@@ -43,6 +43,7 @@ parser.add_argument("--sonarqube", help="SonarQube", action='store_true')
 parser.add_argument('--kibana', help='Kibana', action='store_true')
 parser.add_argument('--mattermost', help='Mattermost', action='store_true')
 parser.add_argument('--rocketchat', help='Rocketchat', action='store_true')
+parser.add_argument('--redmine', help='Redmine', action='store_true')
 
 parser.add_argument("--query", help="Additional query or filter for Shodan", default="")
 
@@ -476,3 +477,26 @@ if args.rocketchat:
                     except:
                         print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
                     print("-----------------------------")
+
+if args.redmine:
+    for current_page in range(first, last):
+        print(Fore.RED + '----------------------------------Redmine - Page ' + str(
+            current_page) + '--------------------------------' + Fore.RESET)
+
+        results = shodan_query('http.component:redmine', current_page)
+
+        if results is not False:
+            for service in results['matches']:
+                if 'http' in service:
+                    if "/account/register" in service['http']['html']:
+                        format_link(service)
+
+                        if service['hostnames']:
+                            for hostname in service['hostnames']:
+                                print('Hostname: ' + Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+
+                        try:
+                            print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                        except:
+                            print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                        print("-----------------------------")
