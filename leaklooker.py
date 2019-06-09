@@ -8,24 +8,6 @@ import sys
 
 SHODAN_API_KEY = ''
 
-print(r"""
-         ,
-         )\
-        /  \
-       '  # '
-       ',  ,'
-         `'
-
-         ,
-         )\
-        /  \
-       '  ~ ' 
-       ',  ,'
-         `'
-LeakLooker - Find open databases
-https://medium.com/@woj_ciech https://github.com/woj-ciech/
-Example: python leaklooker.py --mongodb --couchdb --kibana --elastic --first 21 --last 37""")
-
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 group = parser.add_argument_group("Pages")
@@ -49,24 +31,15 @@ parser.add_argument('--jira', help='Jira', action='store_true')
 
 parser.add_argument("--query", help="Additional query or filter for Shodan", default="")
 
-group.add_argument('--first', help='First current_page', default=None, type=int)
-group.add_argument('--last', help='Last current_page', default=None, type=int)
+group.add_argument('--first', help='First page', default=1, type=int)
+group.add_argument('--last', help='Last page', default=20, type=int)
 
 args = parser.parse_args()
 first = args.first
 last = args.last
 
-if first and last is None:
-    print("Correct current_pages")
-    sys.exit()
-elif last and first is None:
-    print('Correct current_pages')
-    sys.exit()
-elif first is None and last is None:
-    print("Choose current_pages to search")
-    sys.exit()
-elif first > last:
-    print('Correct current_pages')
+if first > last:
+    print('First page is greater than last page!')
     sys.exit()
 else:
     last = last + 1
@@ -82,6 +55,7 @@ def shodan_query(query, page):
 
     if len(result['matches']) > 0:
         print('Found ' + str(result['total']) + " results")
+        print('--------------------------------')
     else:
         print("Nothing was found")
         return False
