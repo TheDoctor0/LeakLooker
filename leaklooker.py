@@ -44,6 +44,8 @@ parser.add_argument('--kibana', help='Kibana', action='store_true')
 parser.add_argument('--mattermost', help='Mattermost', action='store_true')
 parser.add_argument('--rocketchat', help='Rocketchat', action='store_true')
 parser.add_argument('--redmine', help='Redmine', action='store_true')
+parser.add_argument('--otrs', help='OTRS', action='store_true')
+parser.add_argument('--jira', help='Jira', action='store_true')
 
 parser.add_argument("--query", help="Additional query or filter for Shodan", default="")
 
@@ -80,7 +82,6 @@ def shodan_query(query, page):
 
     if len(result['matches']) > 0:
         print('Found ' + str(result['total']) + " results")
-
     else:
         print("Nothing was found")
         return False
@@ -489,6 +490,52 @@ if args.redmine:
             for service in results['matches']:
                 if 'http' in service:
                     if "/account/register" in service['http']['html']:
+                        format_link(service)
+
+                        if service['hostnames']:
+                            for hostname in service['hostnames']:
+                                print('Hostname: ' + Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+
+                        try:
+                            print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                        except:
+                            print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                        print("-----------------------------")
+
+if args.otrs:
+    for current_page in range(first, last):
+        print(Fore.RED + '----------------------------------OTRS - Page ' + str(
+            current_page) + '--------------------------------' + Fore.RESET)
+
+        results = shodan_query('http.component:otrs', current_page)
+
+        if results is not False:
+            for service in results['matches']:
+                if 'http' in service:
+                    if "Signup" in service['http']['html']:
+                        format_link(service)
+
+                        if service['hostnames']:
+                            for hostname in service['hostnames']:
+                                print('Hostname: ' + Fore.LIGHTYELLOW_EX + hostname + Fore.RESET)
+
+                        try:
+                            print('Country: ' + Fore.LIGHTBLUE_EX + service['location']['country_name'] + Fore.RESET)
+                        except:
+                            print('Country: ' + Fore.RED + 'Unknown' + Fore.RESET)
+                        print("-----------------------------")
+
+if args.jira:
+    for current_page in range(first, last):
+        print(Fore.RED + '----------------------------------Jira - Page ' + str(
+            current_page) + '--------------------------------' + Fore.RESET)
+
+        results = shodan_query('http.component:"atlassian jira"', current_page)
+
+        if results is not False:
+            for service in results['matches']:
+                if 'http' in service:
+                    if "/issues/" in service['http']['html'] or "/Signup" in service['http']['html']:
                         format_link(service)
 
                         if service['hostnames']:
