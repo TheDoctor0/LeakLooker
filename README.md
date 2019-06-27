@@ -1,4 +1,5 @@
-# LeakLooker
+# LeakLooker [![StyleCI](https://github.styleci.io/repos/188894591/shield?branch=master&style=flat)](https://github.styleci.io/repos/188894591) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TheDoctor0/LeakLooker/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/TheDoctor0/LeakLooker/?branch=master) [![License](https://img.shields.io/github/license/TheDoctor0/LeakLooker.svg?color=sucess)](https://img.shields.io/github/license/TheDoctor0/LeakLooker.svg?color=sucess&style=plastic)
+
 Find open databases and public services with Shodan.
 
 This version supports:
@@ -25,15 +26,18 @@ This version supports:
 Results can be limited using custom query.
 
 ## References
+
 https://medium.com/@woj_ciech/leaklooker-find-open-databases-in-a-second-9da4249c8472
 
 https://medium.com/@woj_ciech/leaklooker-v2-find-more-open-servers-and-source-code-leaks-25e671700e41
 
 ## Requirements:
+
 - Python 3
 - Shodan paid plan (except Kibana, Jenkins, Gitea and SonarQube search)
 
 ## Usage
+
 Put your *Shodan API key* in a line 9.
 
 Install required libraries:
@@ -78,6 +82,7 @@ Pages:
 ```
 
 ## Example
+
 ```
 root@kali:~/# python leaklooker.py --mongodb --couchdb --kibana --elastic --first 12 --last 14
 [...]
@@ -167,9 +172,11 @@ Country: United Kingdom
 ```
 
 ## Screenshots
+
 ![](https://cdn-images-1.medium.com/max/800/1*Fj8DRqY9bpDmftuPK9clUA.png)
 
 ![](https://cdn-images-1.medium.com/max/600/1*-s4pZpMIU4ZbdRjuBVxRYg.png)
 
 ## Additional
+
 Tool has been made for educational purposes only. I'm not responsible for any damage caused.
